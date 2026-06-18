@@ -31,3 +31,6 @@ seaborn>=0.12.0         # Matriz de confusión y gráficas estadísticas
 
 # --- Utilidades de progreso ------------------------------------------------
 tqdm>=4.66.0            # Barras de progreso durante el entrenamiento
+
+# --- Descarga de datasets públicos -----------------------------------------
+roboflow>=1.1.0         # Cliente para descargar datasets desde Roboflow Universe

@@ -329,6 +329,3 @@ En muchas plantas de manufactura, el control de calidad de las piezas fundidas/m
 - **[OpenCV](https://opencv.org/)** — procesamiento de imágenes y video.
 - **Python 3.10+** — lenguaje de programación.
 
----
-
-> 📌 *Proyecto académico desarrollado con fines educativos para la asignatura de Visión Artificial / Ingeniería Mecatrónica.*

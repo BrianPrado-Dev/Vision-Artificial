@@ -2,6 +2,11 @@
 #  .gitignore  -  Archivos y carpetas que NO se suben a GitHub
 # =============================================================================
 
+# --- Credenciales y secretos (¡NUNCA subir a GitHub!) ----------------------
+.env
+*.env
+.env.local
+
 # --- Entornos virtuales de Python ------------------------------------------
 venv/
 env/
