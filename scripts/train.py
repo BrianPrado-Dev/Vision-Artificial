@@ -39,7 +39,8 @@ import argparse            # Lee parámetros (hiperparámetros) desde la termina
 from pathlib import Path   # Manejo de rutas que funciona igual en Windows/Linux/Mac
 
 import torch               # Motor de deep learning; lo usamos para detectar la GPU
-from ultralytics import YOLO  # Clase principal del modelo YOLOv8
+from ultralytics import YOLO
+from yaml import parser  # Clase principal del modelo YOLOv8
 
 
 # ----------------------------------------------------------------------------
@@ -60,7 +61,7 @@ def parse_arguments():
     # --- Datos y modelo base ---
     parser.add_argument(
         "--data", type=str,
-        default="datasets/defectos_cnc_fundicion/data.yaml",
+        default="datasets/roboflow_fundicion/data.yaml", 
         help="Ruta al archivo data.yaml que describe el dataset."
     )
     parser.add_argument(
