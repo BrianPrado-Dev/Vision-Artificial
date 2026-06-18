@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe de Resultados — Detección de Defectos CNC con YOLOv8</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    color: #1a1a1a;
+    line-height: 1.5;
+    margin: 0;
+    background: #fafafa;
+    font-size: 16px;
+  }
+  .hoja {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 50px 60px;
+    border: 1px solid #ddd;
+  }
+  h1 {
+    font-size: 1.45rem;
+    text-align: center;
+    font-weight: bold;
+    margin: 0 0 18px;
+    line-height: 1.3;
+  }
+  h2 {
+    font-size: 1.15rem;
+    font-weight: bold;
+    margin-top: 30px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #bbb;
+  }
+  h3 { font-size: 1.02rem; font-weight: bold; margin-bottom: 4px; }
+  p, li { text-align: justify; }
+  .meta {
+    border-top: 2px solid #333;
+    border-bottom: 2px solid #333;
+    padding: 12px 2px;
+    margin: 18px 0 8px;
+    font-size: .95rem;
+  }
+  .meta b { font-weight: bold; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: .9rem;
+  }
+  th, td {
+    border: 1px solid #999;
+    padding: 7px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #ececec; font-weight: bold; }
+  code {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: .88em;
+    background: #f2f2f2;
+    padding: 1px 4px;
+    color: #222;
+  }
+  .nota {
+    background: #f5f5f5;
+    border-left: 3px solid #999;
+    padding: 9px 13px;
+    font-size: .9rem;
+    font-style: italic;
+    margin: 12px 0;
+  }
+  figure { margin: 18px 0; text-align: center; }
+  figure img { max-width: 100%; height: auto; border: 1px solid #bbb; }
+  figcaption { font-size: .85rem; color: #555; margin-top: 6px; font-style: italic; }
+  ol, ul { padding-left: 24px; }
+  li { margin: 5px 0; }
+  footer {
+    margin-top: 36px;
+    border-top: 1px solid #bbb;
+    padding-top: 10px;
+    font-size: .8rem;
+    color: #666;
+    text-align: center;
+    font-style: italic;
+  }
+  .toolbar {
+    background: #efefef;
+    border-bottom: 1px solid #ccc;
+    padding: 8px 14px;
+    text-align: center;
+    font-size: .85rem;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .toolbar button {
+    background: #fff;
+    border: 1px solid #888;
+    border-radius: 3px;
+    padding: 5px 14px;
+    cursor: pointer;
+    font-size: .85rem;
+    color: #222;
+    margin-left: 6px;
+  }
+  .toolbar button:hover { background: #e4e4e4; }
+
+  @media print {
+    body { background: #fff; font-size: 11pt; }
+    .hoja { border: none; margin: 0; max-width: 100%; padding: 0; }
+    .toolbar { display: none; }
+    h2 { page-break-after: avoid; }
+    table, figure { page-break-inside: avoid; }
+    th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+  @page { margin: 20mm 18mm; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  Para obtener el PDF use <b>Ctrl + P</b> y seleccione "Guardar como PDF".
+  <button onclick="window.print()">Guardar como PDF</button>
+</div>
+
+<div class="hoja">
+
+  <h1>Informe de Resultados<br>Detección de Defectos en Piezas de Fundición CNC mediante YOLOv8</h1>
+
+  <div class="meta">
+    <b>Autor:</b> Brian Prado — Ingeniería Mecatrónica<br>
+    <b>Asignatura:</b> Visión Artificial<br>
+    <b>Docente:</b> Jose Ramón Navarro<br>
+    <b>Fecha:</b> 19 de junio de 2026<br>
+    <b>Repositorio:</b> <a href="https://github.com/BrianPrado-Dev/Vision-Artificial">github.com/BrianPrado-Dev/Vision-Artificial</a>
+  </div>
+
+  <h2>1. Objetivo</h2>
+  <p>Entrenar y evaluar un modelo de detección de objetos de la familia YOLOv8 capaz de
+  identificar defectos en piezas de fundición CNC (rebabas, grietas, picaduras, rayones y
+  deformaciones) y de distinguir el estado del acabado superficial de la pieza, como base
+  para un sistema de inspección de calidad automatizado en una línea de producción.</p>
+
+  <h2>2. Configuración experimental</h2>
+  <p>El modelo se entrenó en la nube (Google Colab) sobre una unidad de procesamiento gráfico
+  NVIDIA Tesla T4, partiendo de los pesos preentrenados YOLOv8s (aprendizaje por
+  transferencia desde el conjunto de datos COCO).</p>
+  <table>
+    <thead><tr><th>Parámetro</th><th>Valor</th></tr></thead>
+    <tbody>
+      <tr><td>Arquitectura</td><td>YOLOv8s (small)</td></tr>
+      <tr><td>Conjunto de datos</td><td>casting-detection v10 (Roboflow Universe)</td></tr>
+      <tr><td>Imágenes (entrenamiento / validación / prueba)</td><td>3 659 / 391 / 220</td></tr>
+      <tr><td>Número de clases</td><td>8</td></tr>
+      <tr><td>Épocas</td><td>50</td></tr>
+      <tr><td>Resolución de entrada</td><td>640 × 640 px</td></tr>
+      <tr><td>Tamaño de lote</td><td>16</td></tr>
+      <tr><td>Optimizador</td><td>SGD (configuración automática de Ultralytics)</td></tr>
+      <tr><td>Hardware</td><td>GPU NVIDIA Tesla T4 (16 GB)</td></tr>
+    </tbody>
+  </table>
+  <p>Las ocho clases del conjunto de datos son: <code>Casting_burr</code>,
+  <code>Polished_casting</code>, <code>burr</code>, <code>crack</code>, <code>pit</code>,
+  <code>scratch</code>, <code>strain</code> y <code>unpolished_casting</code>.</p>
+
+  <h2>3. Métricas globales de validación</h2>
+  <div class="nota">Los valores presentados son aproximaciones obtenidas de las gráficas de
+  entrenamiento. Los valores exactos se encuentran en el archivo
+  <code>runs/entrenamiento/defectos_yolov8/results.csv</code> (última fila).</div>
+  <table>
+    <thead><tr><th>Métrica</th><th>Valor</th><th>Interpretación</th></tr></thead>
+    <tbody>
+      <tr><td>Precisión (Precision)</td><td>0.80</td><td>De cada 100 defectos detectados, aproximadamente 80 eran correctos (pocos falsos positivos).</td></tr>
+      <tr><td>Exhaustividad (Recall)</td><td>0.74</td><td>El modelo identificó cerca del 74 % de los defectos realmente presentes.</td></tr>
+      <tr><td>mAP@0.5</td><td>0.78</td><td>Precisión media con solapamiento IoU mayor o igual a 0.5. Indica buena capacidad de detección.</td></tr>
+      <tr><td>mAP@0.5:0.95</td><td>0.57</td><td>Métrica estricta (promedio sobre varios umbrales de IoU). Localización correcta, pero con margen de mejora.</td></tr>
+    </tbody>
+  </table>
+  <p>El valor de mAP@0.5 de 0.78 indica un desempeño satisfactorio para una aplicación de
+  inspección industrial. La diferencia respecto al mAP@0.5:0.95 de 0.57 es esperable y
+  señala que el ajuste fino de las cajas delimitadoras (la localización exacta) constituye
+  el principal margen de mejora.</p>
+
+  <h2>4. Curvas de entrenamiento</h2>
+  <figure>
+    <img src="evidencias/imagenes/results.png" alt="Curvas de entrenamiento">
+    <figcaption>Figura 1. Evolución de las funciones de pérdida (box, cls, dfl) y de las
+    métricas (precisión, exhaustividad y mAP) a lo largo de las 50 épocas.</figcaption>
+  </figure>
+  <ul>
+    <li><b>Convergencia.</b> Las tres funciones de pérdida de entrenamiento
+    (<code>box_loss</code>, <code>cls_loss</code> y <code>dfl_loss</code>) descienden de forma
+    sostenida, lo que confirma un aprendizaje correcto y estable.</li>
+    <li><b>Discontinuidad en la época 40.</b> El repunte observado en <code>box_loss</code> y
+    <code>dfl_loss</code> alrededor de la época 40 no constituye un error, sino la
+    desactivación automática de la augmentación <i>mosaic</i> (parámetro
+    <code>close_mosaic</code>), comportamiento estándar de YOLOv8 que ajusta el modelo sobre
+    imágenes reales durante las últimas diez épocas.</li>
+    <li><b>Generalización.</b> Las pérdidas de validación se estabilizan sin incrementarse de
+    forma pronunciada, por lo que no se observa sobreajuste severo. Las métricas se estabilizan
+    a partir de la época 30-35, lo que indica que el modelo había convergido.</li>
+  </ul>
+
+  <h2>5. Matriz de confusión</h2>
+  <figure>
+    <img src="evidencias/imagenes/confusion_matrix.png" alt="Matriz de confusión">
+    <figcaption>Figura 2. Matriz de confusión sobre el conjunto de validación
+    (filas: clase predicha; columnas: clase real).</figcaption>
+  </figure>
+  <p>El desempeño es heterogéneo entre las distintas clases:</p>
+  <table>
+    <thead><tr><th>Clase</th><th>Aciertos</th><th>Exhaustividad aprox.</th><th>Valoración</th></tr></thead>
+    <tbody>
+      <tr><td><code>Polished_casting</code></td><td>202</td><td>91 %</td><td>Excelente</td></tr>
+      <tr><td><code>Casting_burr</code></td><td>88</td><td>99 %</td><td>Excelente</td></tr>
+      <tr><td><code>pit</code> (picadura)</td><td>75</td><td>85 %</td><td>Bueno</td></tr>
+      <tr><td><code>unpolished_casting</code></td><td>65</td><td>83 %</td><td>Bueno</td></tr>
+      <tr><td><code>crack</code> (grieta)</td><td>126</td><td>69 %</td><td>Aceptable</td></tr>
+      <tr><td><code>strain</code> (deformación)</td><td>5</td><td>62 %</td><td>Limitado (pocas muestras)</td></tr>
+      <tr><td><code>scratch</code> (rayón)</td><td>116</td><td>42 %</td><td>Deficiente</td></tr>
+      <tr><td><code>burr</code></td><td>0</td><td>—</td><td>Sin muestras de prueba</td></tr>
+    </tbody>
+  </table>
+  <h3>Hallazgos principales</h3>
+  <ol>
+    <li>Las clases asociadas al estado de la pieza, <code>Polished_casting</code> (202
+    aciertos) y <code>Casting_burr</code> (88 aciertos), se detectan prácticamente sin error;
+    el sistema distingue con fiabilidad una pieza conforme de una con rebaba de fundición.</li>
+    <li>La principal confusión se produce entre <code>scratch</code> y el fondo: 144 rayones
+    reales se clasificaron como fondo (no detectados) y 86 regiones de fondo se detectaron como
+    rayón (falsos positivos). Este comportamiento es coherente con la naturaleza del defecto,
+    pues los rayones son finos y de bajo contraste.</li>
+    <li>Existe confusión entre <code>crack</code> y <code>pit</code>: 26 grietas se predijeron
+    como picaduras y 11 picaduras como grietas, lo cual resulta razonable al tratarse de
+    defectos pequeños y localizados.</li>
+    <li>La clase <code>burr</code> no es predicha por el modelo y carece de instancias de
+    prueba relevantes, debido a la redundancia de etiquetas del conjunto de datos comunitario
+    (<code>burr</code> frente a <code>Casting_burr</code>).</li>
+    <li>Se observa un desbalance de clases: <code>strain</code> y <code>burr</code> están muy
+    poco representadas, lo que limita su evaluación y su desempeño.</li>
+  </ol>
+
+  <h2>6. Ejemplos de inferencia</h2>
+  <p>A continuación se muestran ejemplos representativos de la inferencia del modelo sobre el
+  conjunto de prueba. Las 220 imágenes anotadas se encuentran disponibles en el directorio
+  <code>evidencias/predicciones/</code> del repositorio.</p>
+  <figure>
+    <img src="evidencias/predicciones/cast_def_0_1019_jpeg.rf.c96a3513d835c3d9bedd9c2dbd697f61.jpg" alt="Pieza defectuosa">
+    <figcaption>Figura 3. Detección sobre una pieza con defecto (picadura y acabado sin pulir).</figcaption>
+  </figure>
+  <figure>
+    <img src="evidencias/predicciones/cast_ok_0_9700_jpeg.rf.f93928f5590d395dc9db5ea93d8d2d82.jpg" alt="Pieza conforme">
+    <figcaption>Figura 4. Detección sobre una pieza conforme (acabado pulido).</figcaption>
+  </figure>
+
+  <h2>7. Discusión y limitaciones</h2>
+  <ul>
+    <li>El conjunto de datos es de origen comunitario, con etiquetas solapadas
+    (<code>burr</code>/<code>Casting_burr</code> y <code>Polished</code>/<code>unpolished</code>)
+    y desbalance de clases, lo que penaliza las métricas globales a pesar del buen
+    comportamiento en las clases principales.</li>
+    <li>Los defectos sutiles, como los rayones (<code>scratch</code>), requieren mayor
+    resolución o una iluminación controlada (por ejemplo, iluminación rasante) para mejorar su
+    detección.</li>
+    <li>El valor de mAP@0.5:0.95 indica que la localización de las cajas podría afinarse con un
+    mayor número de épocas de entrenamiento o con un modelo de mayor capacidad (YOLOv8m).</li>
+  </ul>
+
+  <h2>8. Conclusiones</h2>
+  <p>El modelo YOLOv8s entrenado resulta viable para la inspección automatizada de piezas de
+  fundición, con un desempeño sobresaliente en la discriminación entre piezas conformes y
+  piezas con rebaba, y un valor de mAP@0.5 de 0.78. Las principales líneas de mejora son:</p>
+  <ol>
+    <li>Equilibrar y depurar el conjunto de datos, unificando las clases redundantes y
+    añadiendo muestras de <code>scratch</code> y <code>strain</code>.</li>
+    <li>Aumentar el número de épocas o el tamaño del modelo (por ejemplo, YOLOv8m) para mejorar
+    la localización (mAP@0.5:0.95).</li>
+    <li>Mejorar la adquisición de imagen (iluminación rasante y mayor resolución) para realzar
+    los defectos de bajo contraste.</li>
+  </ol>
+
+  <footer>Informe elaborado para la asignatura de Visión Artificial — Ingeniería Mecatrónica.</footer>
+
+</div>
+</body>
+</html>
