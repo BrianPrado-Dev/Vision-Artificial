@@ -11,8 +11,8 @@
 
 ## 👤 Autor
 
-    Nombre | Carrera |
-Brian Prado|Ing Mecatronica|
+    Nombre      | Carrera |
+    Brian Prado | Ing Mecatronica |
 
 > **Asignatura:** Vision Artificial  
 > **Docente:** Jose Ramon Navarro   
