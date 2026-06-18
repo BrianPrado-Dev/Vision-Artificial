@@ -1,0 +1,65 @@
+# =============================================================================
+#  data.yaml  -  Archivo de configuración del DATASET para YOLOv8
+# -----------------------------------------------------------------------------
+#  Este archivo le dice a YOLO:
+#    1) DÓNDE están las imágenes de entrenamiento, validación y prueba.
+#    2) CUÁNTAS clases de objetos vamos a detectar (nc = number of classes).
+#    3) CÓMO se llama cada clase (lista 'names', el orden define el ID 0,1,2...).
+#
+#  IMPORTANTE sobre las rutas:
+#  - La clave 'path' es la carpeta RAÍZ del dataset. Las rutas 'train/val/test'
+#    se interpretan como RELATIVAS a 'path'.
+#  - Lo más robusto es usar una RUTA ABSOLUTA en 'path' para evitar errores de
+#    "dataset not found". Ejemplo en Windows:
+#       path: C:/Users/thesw/OneDrive/Documents/Vision-Artificial/datasets/defectos_cnc_fundicion
+#  - Usa SIEMPRE barras normales '/' aunque estés en Windows.
+# =============================================================================
+
+# --- 1. RUTAS DEL DATASET ---------------------------------------------------
+# Ruta raíz (ajústala a la ubicación real en tu equipo si da error).
+path: ./datasets/defectos_cnc_fundicion
+
+train: train/images   # Carpeta con las imágenes de ENTRENAMIENTO
+val: valid/images     # Carpeta con las imágenes de VALIDACIÓN
+test: test/images     # Carpeta con las imágenes de PRUEBA (opcional)
+
+# --- 2. NÚMERO DE CLASES ----------------------------------------------------
+nc: 9
+
+# --- 3. NOMBRES DE LAS CLASES ----------------------------------------------
+#  El ÍNDICE de la lista es el ID que aparece en los archivos de etiquetas .txt
+#  Caso de estudio: defectos de fundición CNC + desgaste de herramienta.
+names:
+  0: pieza_conforme      # Pieza correcta, sin defectos (referencia "OK")
+  1: porosidad           # Burbujas/poros de gas atrapado en la fundición
+  2: grieta              # Fisura o grieta superficial en la pieza
+  3: inclusion           # Material extraño incrustado (arena, escoria)
+  4: rechupe             # Cavidad por contracción al solidificar el metal
+  5: rebaba              # Exceso de material en bordes (flash / burr)
+  6: herramienta_ok      # Filo de fresa en buen estado
+  7: desgaste_flanco     # Desgaste en el flanco de la herramienta de fresado
+  8: filo_roto           # Astillamiento o rotura del filo de corte
+
+# =============================================================================
+#  ESTRUCTURA DE CARPETAS QUE ESPERA YOLO (formato Ultralytics):
+#
+#    datasets/defectos_cnc_fundicion/
+#    ├── train/
+#    │   ├── images/   ->  imagen001.jpg, imagen002.jpg, ...
+#    │   └── labels/   ->  imagen001.txt, imagen002.txt, ...
+#    ├── valid/
+#    │   ├── images/
+#    │   └── labels/
+#    └── test/
+#        ├── images/
+#        └── labels/
+#
+#  FORMATO DE CADA ARCHIVO DE ETIQUETA (.txt), una línea por objeto:
+#       <class_id> <x_centro> <y_centro> <ancho> <alto>
+#  Todos los valores de la caja están NORMALIZADOS entre 0 y 1.
+#  Ejemplo (un poro 'porosidad' (clase 1) en el centro de la imagen):
+#       1 0.500000 0.500000 0.120000 0.090000
+#
+#  SUGERENCIA: usa Roboflow o LabelImg para etiquetar y exportar en formato
+#  "YOLOv8", que genera automáticamente esta estructura y este data.yaml.
+# =============================================================================

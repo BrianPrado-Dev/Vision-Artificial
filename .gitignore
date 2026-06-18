@@ -1,0 +1,46 @@
+# =============================================================================
+#  .gitignore  -  Archivos y carpetas que NO se suben a GitHub
+# =============================================================================
+
+# --- Entornos virtuales de Python ------------------------------------------
+venv/
+env/
+.venv/
+ENV/
+
+# --- Cachés y archivos compilados de Python --------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- Pesos preentrenados descargados automáticamente por Ultralytics -------
+#  (Se descargan solos al ejecutar train.py; no es necesario versionarlos)
+yolov8n.pt
+yolov8s.pt
+yolov8m.pt
+yolov8l.pt
+yolov8x.pt
+yolo11n.pt
+
+# --- Resultados crudos de entrenamiento ------------------------------------
+#  Ultralytics genera la carpeta 'runs/' con logs, gráficas y checkpoints.
+#  El modelo final (best.pt) se copia manualmente a la carpeta 'models/'.
+runs/
+
+# --- Datasets pesados (descomenta si tu dataset es muy grande para GitHub) --
+#  GitHub limita archivos a 100 MB. Para datasets grandes usa Roboflow,
+#  Google Drive o Git LFS, y documenta el enlace en el README.
+# datasets/**/images/
+# datasets/**/labels/
+
+# --- Archivos del sistema operativo ----------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Configuración local de editores / IDEs --------------------------------
+.vscode/
+.idea/
+*.swp

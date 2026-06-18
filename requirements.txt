@@ -1,0 +1,33 @@
+# =============================================================================
+#  requirements.txt
+#  Dependencias del proyecto de Visión Artificial (detección de defectos CNC)
+# -----------------------------------------------------------------------------
+#  Instalación:   pip install -r requirements.txt
+#
+#  NOTA SOBRE PyTorch / GPU:
+#  El paquete 'ultralytics' instala automáticamente 'torch' y 'torchvision'
+#  en su versión para CPU. Si cuentas con una GPU NVIDIA y deseas acelerar el
+#  entrenamiento, instala primero la versión de PyTorch con soporte CUDA
+#  siguiendo las instrucciones oficiales: https://pytorch.org/get-started/locally/
+# =============================================================================
+
+# --- Núcleo de Visión Artificial / Deep Learning ---------------------------
+ultralytics==8.3.0        # Framework YOLOv8/YOLO11 (modelo, entrenamiento, inferencia)
+torch>=2.0.0              # Motor de deep learning (lo usa ultralytics por debajo)
+torchvision>=0.15.0       # Utilidades de visión para torch (transformaciones, modelos)
+
+# --- Procesamiento de imágenes y video -------------------------------------
+opencv-python==4.10.0.84  # Lectura/escritura de imágenes y video, dibujo de cajas
+Pillow>=10.0.0            # Manejo de imágenes (formato, conversión, guardado)
+
+# --- Cálculo numérico y manejo de datos ------------------------------------
+numpy>=1.24.0            # Operaciones matriciales (las imágenes son matrices)
+pandas>=2.0.0            # Tablas de resultados/métricas (CSV de entrenamiento)
+PyYAML>=6.0             # Lectura del archivo de configuración data.yaml
+
+# --- Visualización de métricas y resultados --------------------------------
+matplotlib>=3.7.0       # Gráficas de pérdidas, métricas y resultados de validación
+seaborn>=0.12.0         # Matriz de confusión y gráficas estadísticas
+
+# --- Utilidades de progreso ------------------------------------------------
+tqdm>=4.66.0            # Barras de progreso durante el entrenamiento
