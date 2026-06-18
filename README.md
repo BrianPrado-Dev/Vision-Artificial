@@ -7,6 +7,8 @@
 ![Ultralytics](https://img.shields.io/badge/Framework-Ultralytics-orange)
 ![License](https://img.shields.io/badge/License-Academic-lightgrey)
 
+[![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/BrianPrado-Dev/Vision-Artificial/blob/main/notebooks/Entrenamiento_GPU_Colab.ipynb)
+
 ---
 
 ## 👤 Autor
@@ -35,26 +37,24 @@
 
 ## 📋 Descripción del Proyecto
 
-Este proyecto implementa un sistema de **inspección visual automatizada** capaz de identificar, en tiempo real, dos tipos de problemas comunes en una línea de manufactura CNC:
-
-1. **Defectos en piezas de fundición:** porosidad, grietas, inclusiones, rechupes y rebabas.
-2. **Desgaste en herramientas de fresado:** desgaste de flanco y rotura/astillamiento del filo de corte.
+Este proyecto implementa un sistema de **inspección visual automatizada** capaz de identificar, en tiempo real, **defectos en piezas de fundición CNC**: rebabas, grietas, picaduras, rayones, deformaciones y el estado del acabado superficial de la pieza.
 
 El sistema utiliza una red neuronal convolucional de detección de objetos de la familia **YOLO (You Only Look Once)**, concretamente **YOLOv8**, por su excelente equilibrio entre **velocidad** (apto para tiempo real) y **precisión**, características indispensables en un entorno industrial.
 
-El proyecto detecta **9 clases**:
+El modelo se entrena con el dataset público **casting-detection v10** ([Roboflow Universe](https://universe.roboflow.com/new-workspace-kmz9b/casting-detection-leboi)), que define **8 clases**:
 
-| ID | Clase | Descripción |
-|----|-------|-------------|
-| 0 | `pieza_conforme` | Pieza correcta, sin defectos (referencia OK) |
-| 1 | `porosidad` | Burbujas/poros de gas atrapado en la fundición |
-| 2 | `grieta` | Fisura o grieta superficial |
-| 3 | `inclusion` | Material extraño incrustado (arena, escoria) |
-| 4 | `rechupe` | Cavidad por contracción al solidificar el metal |
-| 5 | `rebaba` | Exceso de material en bordes (flash / burr) |
-| 6 | `herramienta_ok` | Filo de fresa en buen estado |
-| 7 | `desgaste_flanco` | Desgaste en el flanco de la herramienta |
-| 8 | `filo_roto` | Astillamiento o rotura del filo de corte |
+| ID | Clase (nombre real) | Descripción |
+|----|---------------------|-------------|
+| 0 | `Casting_burr` | Rebaba de fundición (exceso de material en bordes de la pieza) |
+| 1 | `Polished_casting` | Pieza fundida con superficie pulida/acabada (referencia OK) |
+| 2 | `burr` | Rebaba / exceso de material en aristas |
+| 3 | `crack` | Grieta o fisura superficial |
+| 4 | `pit` | Picadura o poro superficial (pequeña cavidad) |
+| 5 | `scratch` | Rayón o arañazo en la superficie |
+| 6 | `strain` | Deformación / marca de tensión en la pieza |
+| 7 | `unpolished_casting` | Pieza fundida sin pulir (superficie en bruto) |
+
+> ℹ️ Los nombres de clase están en inglés porque provienen del dataset público original. Al ser un dataset comunitario, algunas clases pueden solaparse (p. ej. `Casting_burr` y `burr`). El **Caso de Estudio** más abajo describe la visión industrial completa, que en una implementación real podría ampliarse al desgaste de herramientas de fresado con un dataset adicional.
 
 ---
 

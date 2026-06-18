@@ -40,6 +40,10 @@ runs/
 # datasets/**/images/
 # datasets/**/labels/
 
+#  Dataset descargado de Roboflow (se regenera con scripts/download_dataset.py).
+#  Son miles de imágenes; NO conviene subirlas a GitHub.
+datasets/roboflow_fundicion/
+
 # --- Archivos del sistema operativo ----------------------------------------
 .DS_Store
 Thumbs.db

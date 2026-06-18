@@ -39,8 +39,7 @@ import argparse            # Lee parámetros (hiperparámetros) desde la termina
 from pathlib import Path   # Manejo de rutas que funciona igual en Windows/Linux/Mac
 
 import torch               # Motor de deep learning; lo usamos para detectar la GPU
-from ultralytics import YOLO
-from yaml import parser  # Clase principal del modelo YOLOv8
+from ultralytics import YOLO  # Clase principal del modelo YOLOv8
 
 
 # ----------------------------------------------------------------------------

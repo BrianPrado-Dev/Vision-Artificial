@@ -237,6 +237,43 @@ def resumir_dataset(carpeta_destino):
 
 
 # ----------------------------------------------------------------------------
+# 5b. CORRECCIÓN AUTOMÁTICA DE LAS RUTAS DEL data.yaml DESCARGADO
+# ----------------------------------------------------------------------------
+def corregir_rutas_dataset(carpeta_dataset):
+    """
+    Roboflow genera un data.yaml con rutas relativas ('../train/images') y SIN
+    la clave 'path:'. Eso provoca que Ultralytics busque las imágenes en el
+    lugar equivocado y falle con 'no images found'.
+
+    Esta función reescribe el data.yaml para usar una RUTA ABSOLUTA en 'path' y
+    subrutas simples (train/images, valid/images, test/images), garantizando que
+    el entrenamiento localice los datos sin importar desde dónde se ejecute.
+    """
+    import yaml  # PyYAML
+    carpeta = Path(carpeta_dataset)
+    yaml_path = carpeta / "data.yaml"
+    if not yaml_path.exists():
+        return
+    try:
+        with open(yaml_path, "r", encoding="utf-8") as f:
+            config = yaml.safe_load(f)
+
+        # Ruta absoluta a la carpeta del dataset (con barras '/' para Windows).
+        config["path"] = str(carpeta.resolve()).replace("\\", "/")
+        config["train"] = "train/images"
+        config["val"] = "valid/images"
+        # 'test' solo si esa carpeta realmente existe.
+        if (carpeta / "test" / "images").exists():
+            config["test"] = "test/images"
+
+        with open(yaml_path, "w", encoding="utf-8") as f:
+            yaml.safe_dump(config, f, sort_keys=False, allow_unicode=True)
+        print(f"[INFO] data.yaml corregido con ruta absoluta: {config['path']}")
+    except Exception as e:
+        print(f"[AVISO] No se pudo corregir el data.yaml automáticamente: {e}")
+
+
+# ----------------------------------------------------------------------------
 # 6. FUNCIÓN PRINCIPAL
 # ----------------------------------------------------------------------------
 def main():
@@ -260,9 +297,11 @@ def main():
         )
         sys.exit(1)
 
-    # 6.3 Nos aseguramos de que exista la carpeta destino.
+    # 6.3 Definimos la carpeta destino. IMPORTANTE: NO la creamos vacía de
+    #     antemano, porque el SDK de Roboflow SE SALTA la descarga si detecta
+    #     que la carpeta ya existe. Solo aseguramos que exista su carpeta padre.
     destino = Path(args.output_dir)
-    destino.mkdir(parents=True, exist_ok=True)
+    destino.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"[INFO] Workspace : {args.workspace}")
     print(f"[INFO] Proyecto  : {args.project}")
@@ -288,8 +327,10 @@ def main():
     print(f"\n[INFO] Descargando dataset (v{version_num}) en formato '{args.format}'...")
     try:
         version_obj = proyecto.version(version_num)
-        # download() descarga y descomprime el dataset en 'location'.
-        version_obj.download(args.format, location=str(destino))
+        # download() descarga y descomprime el dataset. overwrite=True FUERZA la
+        # descarga aunque la carpeta exista. El objeto devuelto incluye .location,
+        # que es la ruta REAL donde Roboflow dejó los archivos.
+        dataset = version_obj.download(args.format, location=str(destino), overwrite=True)
     except Exception as e:
         print(
             f"\n[ERROR] Falló la descarga del dataset:\n  {e}\n"
@@ -299,8 +340,11 @@ def main():
         )
         sys.exit(1)
 
-    # 6.6 Mostramos un resumen y los siguientes pasos.
-    yaml_path = resumir_dataset(destino)
+    # 6.6 Determinamos la ruta REAL de descarga (la que reporta Roboflow, por si
+    #     el SDK ignoró 'location') y mostramos un resumen.
+    carpeta_real = Path(getattr(dataset, "location", destino))
+    corregir_rutas_dataset(carpeta_real)   # Arregla rutas para Ultralytics
+    yaml_path = resumir_dataset(carpeta_real)
 
     print("\n" + "=" * 70)
     print(" DESCARGA COMPLETADA CORRECTAMENTE")
